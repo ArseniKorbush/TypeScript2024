@@ -134,3 +134,55 @@ enum FileAccess {
   // вычисляемый элемент
   G = "123".length,
 }
+
+// Union Enumerations and Enumeration Member Types
+
+// There is a special subset of constant enumeration members that are not evaluated: literal enumeration members.
+// A literal enumeration member is a permanent enumeration member with no initialized value or with values that are initialized
+
+//      any string literal (e.g. Т9837Т, З5657З, А8487А)
+//      any numeric literal (e.g. Т8941Т, З4941З)
+//      unary minus applied to any numeric literal (e.g. Т7968Т, З7127З)
+
+// When all the members of an enum have literal enum values, some special semantics come into play.
+
+// First of all, enum members become types too! For example, we can say that some members can only have the value of an enum member:
+
+enum ShapeKind {
+  Circle,
+  Square,
+}
+ 
+interface Circle {
+  kind: ShapeKind.Circle;
+  radius: number;
+}
+ 
+interface Square {
+  kind: ShapeKind.Square;
+  sideLength: number;
+}
+ 
+let c: Circle = {
+  kind: ShapeKind.Square,
+  radius: 100,
+};
+
+// Another change is that enum types effectively become the union of each enum member.
+// When using pooled enums, the type system can take advantage of the fact that it knows the exact set
+// Of values that exist in the enumeration itself. Because of this, TypeScript can catch errors that may cause us to compare values incorrectly. For example:
+
+enum E {
+  Foo,
+  Bar,
+}
+ 
+function f(x: E) {
+  if (x !== E.Foo || x !== E.Bar) {
+    //
+  }
+}
+
+// In this example, we first checked to see if x is E.Foo . If this check is successful,
+// Then our || a short circuit will occur and the ‘if’ body will work. However, if the check fails,
+// Then x can only be E.Foo , so there is no point in checking whether it is equal to E.Bar .
