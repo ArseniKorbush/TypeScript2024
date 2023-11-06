@@ -85,3 +85,52 @@ run(ODirection.Right);
 
 // The biggest argument for this format over TypeScript's enum is that it keeps your codebase
 // Consistent with JavaScript state, and when/if enums are added to JavaScript, after which you can move on to additional syntax.
+
+// Each enumeration member has an associated value, which can be constant or calculated. An enumeration member is considered permanent if:
+
+// This is the first member of the enum, and it has no initializer, in which case it is assigned the value 0 :
+
+// E.X constants:
+
+enum E {
+  X,
+}
+
+// It does not have an initializer, and the previous enumeration member was a numeric constant. 
+// In this case, the value of the current enumeration member will be equal to the value of the previous enumeration member plus one.
+
+// E1.E2 constants:
+
+enum E1 {
+  X,
+  Y,
+  Z,
+}
+ 
+enum E2 {
+  A = 1,
+  B,
+  C,
+}
+
+// An enumeration member is initialized with a constant enumeration expression. A constant enumeration expression is a subset of 
+// TypeScript expressions that can be fully evaluated at compile time. An expression is a constant enumeration expression if it:
+
+//      Literal enumeration expression (basically a string or numeric literal)
+//      A reference to a previously defined permanent enum member (which may come from another enum)
+//      Constant enumeration in parentheses
+//      One of the unary operators + , - , ~ applied to a constant enumeration expression
+//      + , - , * , / , % , << , >> , >>> , & , | , ^ binary operators with constant enumeration expressions as operands
+
+// This is a compile-time error for constant enumeration expressions, which must evaluate to NaN or Infinity .
+// In all other cases, the enumeration member is considered evaluated.
+
+enum FileAccess {
+  // постоянные члены
+  None,
+  Read = 1 << 1,
+  Write = 1 << 2,
+  ReadWrite = Read | Write,
+  // вычисляемый элемент
+  G = "123".length,
+}
