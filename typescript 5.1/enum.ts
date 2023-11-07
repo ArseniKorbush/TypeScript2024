@@ -229,3 +229,29 @@ function printImportant(key: LogLevelStrings, message: string) {
   }
 }
 printImportant("ERROR", "This is a message");
+
+// In addition to creating an object with property names for members, numeric enum members also receive
+// A reverse mapping of enum values to enum names. For example, in this example:
+
+enum Enums {
+  B,
+}
+ 
+let b = Enums.B;
+let nameOfb = Enums[b]; // "B"
+
+// TypeScript compiles this into the following JavaScript:
+
+"use strict";
+var Enum1;
+(function (Enum1) {
+    Enum1[Enum1["A"] = 0] = "A";
+})(Enum1 || (Enum1 = {}));
+let a = Enum1.A;
+let nameOfA = Enum1[a]; // "A"
+ 
+
+// In this generated code, the enum is compiled into an object that stores both forward ( name -> value ) and reverse ( value -> name ) mappings.
+//  References to other enumeration members are always created as property accesses and are never inlined.
+
+// Keep in mind that string enumeration members do not create a reverse mapping at all.
