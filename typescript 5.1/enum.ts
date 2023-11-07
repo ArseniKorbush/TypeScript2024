@@ -185,4 +185,47 @@ function f(x: E) {
 
 // In this example, we first checked to see if x is E.Foo . If this check is successful,
 // Then our || a short circuit will occur and the ‘if’ body will work. However, if the check fails,
-// Then x can only be E.Foo , so there is no point in checking whether it is equal to E.Bar .
+// Then x can only be E.Foo , so there is no point in checking whether it is equal to E.Bar.
+
+// Enumerations are real objects that exist at runtime. For example, the following listing
+
+enum B {
+  X,
+  Y,
+  Z,
+}
+
+// Can actually be passed to functions
+
+function f(obj: { X: number }) {
+  return obj.X;
+}
+ 
+// Works because 'E' has a property 'X' which is a number.
+f(E);
+
+// Even though Enums are real objects that exist at runtime, the keyof keyword works differently than you would expect for typical objects.
+// Instead, use keyof typeof to get a type that represents all the Enum's keys as strings.
+
+enum LogLevel {
+  ERROR,
+  WARN,
+  INFO,
+  DEBUG,
+}
+ 
+/**
+ * This is equivalent to:
+ * type LogLevelStrings = 'ERROR' | 'WARN' | 'INFO' | 'DEBUG';
+ */
+type LogLevelStrings = keyof typeof LogLevel;
+ 
+function printImportant(key: LogLevelStrings, message: string) {
+  const num = LogLevel[key];
+  if (num <= LogLevel.WARN) {
+    console.log("Log level key is:", key);
+    console.log("Log level value is:", num);
+    console.log("Log level message is:", message);
+  }
+}
+printImportant("ERROR", "This is a message");
