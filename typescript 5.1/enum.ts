@@ -255,3 +255,49 @@ let nameOfA = Enum1[a]; // "A"
 //  References to other enumeration members are always created as property accesses and are never inlined.
 
 // Keep in mind that string enumeration members do not create a reverse mapping at all.
+
+// Ambient enums
+// Enumerations are used to describe the form of already existing enumeration types.
+
+declare enum Enum {
+  A = 1,
+  B,
+  C = 2,
+}
+
+// One important difference between surrounding and non-enclosing enumerations is that in regular enumerations,
+// Members that do not have an initializer will be considered constant if the enumeration member that precedes them
+// Is considered constant. In contrast, a surrounding (and non-const) enumeration member that has no initializer is always considered to be computed.
+
+// In modern TypeScript, an enum may not be needed if an object with as const is enough:
+
+const enum EDirection {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+ 
+const ODirection = {
+  Up: 0,
+  Down: 1,
+  Left: 2,
+  Right: 3,
+} as const;
+ 
+EDirection.Up;
+ 
+ODirection.Up;
+ 
+// Using an enum as a parameter
+function walk(dir: EDirection) {}
+ 
+// Requires extra line to retrieve values
+type Direction = typeof ODirection[keyof typeof ODirection];
+function run(dir: Direction) {}
+ 
+walk(EDirection.Left);
+run(ODirection.Right);
+
+// The biggest argument for this format over TypeScript's enum is that it keeps your codebase consistent
+// With JavaScript state, and when/if enums are added to JavaScript, after which you can move on to additional syntax.
