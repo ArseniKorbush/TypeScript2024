@@ -63,3 +63,67 @@ declare namespace JSX {
       [elemName: string]: any;
     }
   }
+
+// Value-based elements NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// Value-based elements are simply looked up by IDs that are in scope.
+
+import MyComponent from "./myComponent";
+
+<MyComponent />; // ok
+<SomeOtherComponent />; // error
+
+
+// There are two ways to define an element based on value:
+
+//    Functional Component (FC)
+//    Class Component
+
+// Because these two value-based element types are indistinguishable from each other in a JSX expression,
+// TS first attempts to resolve the expression as a functional component using overload resolution. If the process succeeds,
+// The TS completes converting the expression to its declaration. If a value cannot be resolved as a function component,
+// TS will try to resolve it as a class component. If this fails, TS will report an error.
+
+// Function Component NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// As the name suggests, a component is defined as a JavaScript function where its first argument is a props object.
+// TS requires that the return type be assigned to JSX.Element.
+
+interface FooProp {
+  name: string;
+  X: number;
+  Y: number;
+}
+
+declare function AnotherComponent(prop: { name: string });
+function ComponentFoo(prop: FooProp) {
+  return <AnotherComponent name={prop.name} />;
+}
+
+const Button = (prop: { value: string }, context: { color: string }) => (
+  <button />
+);
+
+// Since a function component is simply a JavaScript function, function overloads can be used here as well:
+
+interface ClickableProps {
+  children: JSX.Element[] | JSX.Element;
+}
+ 
+interface HomeProps extends ClickableProps {
+  home: JSX.Element;
+}
+ 
+interface SideProps extends ClickableProps {
+  side: JSX.Element | string;
+}
+ 
+function MainButton(prop: HomeProps): JSX.Element;
+function MainButton(prop: SideProps): JSX.Element;
+function MainButton(prop: ClickableProps): JSX.Element {
+  // ...
+}
+
+// Note. Functional components were formerly called stateless functional components (SFC).
+// Because functional components can no longer be considered stateless in recent versions of react,
+// The SFC type and its alias StatelessComponent have been deprecated.
