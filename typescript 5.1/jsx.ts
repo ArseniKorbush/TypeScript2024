@@ -127,3 +127,63 @@ function MainButton(prop: ClickableProps): JSX.Element {
 // Note. Functional components were formerly called stateless functional components (SFC).
 // Because functional components can no longer be considered stateless in recent versions of react,
 // The SFC type and its alias StatelessComponent have been deprecated.
+
+// Class Component NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// You can determine the type of a class component. However, to do this, it's best to understand two new terms: element class type and element instance type.
+// Given <Expr />, the class type of the element is the type Expr. So, in the above example, 
+// If MyComponent were an ES6 class, the type of the class would be the constructor and static class of that class.
+// If MyComponent were a factory drop, the class type would be this function.
+
+// Once the class type is established, the instance type is determined by the union of the return types of the class type
+// Construct or call signatures (whichever is present). So again, in the case of an ES6 class instance, the type of the instance 
+// Of that class will be the type of the instance of that class, and in the case of a factory function, that type will be the return value of the slowdown.
+
+class MyComponent {
+  render() {}
+}
+
+// use the design signature
+const myComponent = new MyComponent();
+
+// element class type => MyComponent
+// element instance type => { render: () => void }
+
+function MyFactoryFunction() {
+  return {
+    render: () => {},
+  };
+}
+
+// use call signature
+const myComponent = MyFactoryFunction();
+
+// element class type => MyFactoryFunction
+// element instance type => { render: () => void }
+
+// The interesting thing about the element instance type is that it must be assigned to JSX.ElementClass or it will throw an error.
+// By default, JSX.ElementClass is {} , but it can be extended to limit the use of JSX to only those types that conform to the appropriate interface.
+
+declare namespace JSX {
+  interface ElementClass {
+    render: any;
+  }
+}
+
+class MyComponent {
+  render() {}
+}
+function MyFactoryFunction() {
+  return { render: () => {} };
+}
+
+<MyComponent />; // ok
+<MyFactoryFunction />; // ok
+
+class NotAValidComponent {}
+function NotAValidFactoryFunction() {
+  return {};
+}
+
+<NotAValidComponent />; // error
+<NotAValidFactoryFunction />; // error
