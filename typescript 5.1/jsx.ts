@@ -257,3 +257,66 @@ const props = { requiredProp: "bar" };
 
 const badProps = {};
 <foo {...badProps} />; // error
+
+// Checking the type of children NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// TypeScript 2.3 introduced type checking for child elements in TS. Children is a special property in an element's attribute type
+// Where the JSXExpressions child element is used to insert into attributes. Just as TS uses 
+// JSX.ElementAttributesProperty to define the name of a prop, TS uses JSX.ElementChildrenAttribute
+// To define the names of the child elements in those props. JSX.ElementChildrenAttribute should be declared with a single property.
+
+declare namespace JSX {
+  interface ElementChildrenAttribute {
+    children: {}; // specify the name of the child element that we will use
+  }
+}
+
+// <div>
+//   <h1>Hello</h1>
+// </div>;
+
+// <div>
+//   <h1>Hello</h1>
+//   World
+// </div>;
+
+const CustomComp = (props) => <div>{props.children}</div>
+<CustomComp>
+  <div>Hello World</div>
+  {"This is just a JS expression..." + 1000}
+</CustomComp>
+
+// You can specify the type of child elements just like any other attribute. 
+// This will override the default type e.g . React typings if you use them.
+
+interface PropsType {
+  children: JSX.Element
+  name: string
+}
+
+class Component extends React.Component<PropsType, {}> {
+  render() {
+    return (
+      <h2>
+        {this.props.children}
+      </h2>
+    )
+  }
+}
+
+// OK
+<Component name="foo">
+  <h1>Hello World</h1>
+</Component>
+
+// Error: children are of type JSX.Element, not an array of JSX.Element
+<Component name="bar">
+  <h1>Hello World</h1>
+  <h2>Hello World</h2>
+</Component>
+
+// Error: Children are of type JSX.Element, not a JSX.Element array or string.
+<Component name="baz">
+  <h1>Hello</h1>
+  World
+</Component>
