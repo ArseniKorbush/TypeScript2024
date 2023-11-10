@@ -187,3 +187,73 @@ function NotAValidFactoryFunction() {
 
 <NotAValidComponent />; // error
 <NotAValidFactoryFunction />; // error
+
+// Attribute Type Check NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// The first step in checking attribute types is to determine the element's attribute type. It's a little different between intrinsic and value elements.
+// For internal elements, this is the property type JSX.IntrinsicElements.
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    foo: { bar?: boolean };
+  }
+}
+
+// element attribute type for 'foo' is '{bar ?: boolean}'
+<foo bar />;
+
+// For value-based elements, things are a little more complicated. It is determined by the type of the element instance type property 
+// That was previously defined. Which property to use is determined by JSX.ElementAttributesProperty . It must be declared with one property.
+// The name of this property is then used. Starting with TypeScript 2.8, if JSX.ElementAttributesProperty is not specified, the type
+// Of the first parameter of the class element constructor or function bean call will be used instead.
+
+declare namespace JSX {
+  interface ElementAttributesProperty {
+    props; // specify the name of the property that we will use
+  }
+}
+
+class MyComponent {
+  // specify the element instance type property
+  props: {
+    foo?: string;
+  };
+}
+
+// element attribute type for 'MyComponent' is '{foo ?: string}'
+<MyComponent foo="bar" />;
+
+// The element attribute type is used to check the type of attributes in JSX. Optional and required properties are supported.
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    foo: { requiredProp: string; optionalProp?: number };
+  }
+}
+
+<foo requiredProp="bar" />; // ok
+<foo requiredProp="bar" optionalProp={0} />; // ok
+<foo />; // error, requiredProp is missing
+<foo requiredProp={0} />; // error, requiredProp must be a string
+<foo requiredProp="bar" unknownProp />; // error, unknownProp does not exist
+<foo requiredProp="bar" some-unknown-prop />; // ok because "some-unknown-prop" is not a valid identifier
+
+// ! Warning below
+
+// If the attribute name is not a valid JS identifier (for example, data-* attribute ), 
+// It is not considered an error unless it is found in the element's attribute type.
+
+// Additionally, the JSX.IntrinsicAttributes interface can be used to specify additional properties used by the JSX framework 
+// That are not typically used by props or components' arguments—for example, key in React. To specialize further, 
+// The generic type JSX.IntrinsicClassAttributes<T> can also be used to specify additional attributes of the same type 
+// Only for class components (and not for the Components function). In this type, the general parameter corresponds to the type of the class instance.
+// In React, this is used to resolve the ref attribute of type Ref<T> . Generally speaking, all properties of these interfaces should be optional,
+// Unless you expect users of your JSX platform to need to provide some attribute on a per-tag basis.
+
+// The spread operator also works:
+
+const props = { requiredProp: "bar" };
+<foo {...props} />; // ok
+
+const badProps = {};
+<foo {...badProps} />; // error
