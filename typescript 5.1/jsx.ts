@@ -347,3 +347,29 @@ const a = (
     })}
   </div>
 );
+
+// React integration NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// To use JSX with React you should use React typings. These typings define the JSX namespace appropriately for use with React.
+
+/// <reference path= "react.d.ts" />
+
+interface Props {
+  foo: string;
+}
+
+class MyComponent extends React.Component<Props, {}> {
+  render() {
+    return <span>{this.props.foo}</span>;
+  }
+}
+
+<MyComponent foo="bar" />; // ok
+<MyComponent foo={0} />; // error
+
+// Configuring JSX
+// There are several compiler flags that can be used to customize your JSX, which work both as a compiler flag and through built-in per-file directives :
+
+// jsxFactory
+// jsxFragmentFactory
+// jsxImportSource
