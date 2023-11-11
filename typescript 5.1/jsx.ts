@@ -320,3 +320,30 @@ class Component extends React.Component<PropsType, {}> {
   <h1>Hello</h1>
   World
 </Component>
+
+// Result type JSX NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// By default, the result of a JSX expression is typed as any. You can customize the type by specifying the JSX.Element interface.
+// However, it is not possible to obtain type information about the JSX element, attributes, or child elements from this interface. This is a black box.
+
+// Embedding Expressions NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// JSX allows you to insert expressions between tags by enclosing the expressions in curly braces ( { } ).
+
+const a = (
+  <div>
+    {["foo", "bar"].map((i) => (
+      <span>{i / 2}</span>
+    ))}
+  </div>
+);
+
+// The above code will throw an error because you can't split a string by a number. The output when using the preserve option looks like this:
+
+const a = (
+  <div>
+    {["foo", "bar"].map(function (i) {
+      return <span>{i / 2}</span>;
+    })}
+  </div>
+);
