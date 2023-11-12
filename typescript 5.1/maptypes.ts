@@ -27,3 +27,34 @@ type Features = {
   };
    
   type FeatureOptions = OptionsFlags<Features>;
+
+// Mapping Modifiers NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// There are two additional modifiers that can be applied during matching: readonly and ? , which affect variability and optionality, respectively.
+
+// You can remove or add these modifiers by adding a - or + prefix. If you don't add a prefix, + is assumed.
+
+// Removes read-only attributes from type properties
+type CreateMutable<Type> = {
+  -readonly [Property in keyof Type]: Type[Property];
+};
+
+type LockedAccount = {
+  readonly id: string;
+  readonly name: string;
+};
+
+type UnlockedAccount = CreateMutable<LockedAccount>;
+
+// Removes optional attributes from type properties
+type Concrete<Type> = {
+  [Property in keyof Type]-?: Type[Property];
+};
+ 
+type MaybeUser = {
+  id: string;
+  name?: string;
+  age?: number;
+};
+ 
+type User = Concrete<MaybeUser>;
