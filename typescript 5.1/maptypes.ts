@@ -58,3 +58,50 @@ type MaybeUser = {
 };
  
 type User = Concrete<MaybeUser>;
+
+// Reassigning keys via as NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// In TypeScript 4.1 and later, you can reassign keys in mapped types using the as clause in the mapped type:
+
+type MappedTypeWithNewProperties<Type> = {
+     [Properties in keyof Type as NewKeyType]: Type[Properties]
+}
+
+// You can use functions like template literal types to create new property names based on previous ones:
+
+type Getters<Type> = {
+     [Property in keyof Type as `get${Capitalize<string & Property>}`]: () => Type[Property]
+};
+ 
+interface Person {
+     name: string;
+     age:number;
+     location: string;
+}
+ 
+type LazyPerson = Getters<Person>;
+
+// You can filter the keys by creating never using a conditional type:
+
+// Remove the 'kind' property
+type RemoveKindField<Type> = {
+     [Property in keyof Type as Exclude<Property, "kind">]: Type[Property]
+};
+ 
+interface Circle {
+     kind: "circle";
+     radius: number;
+}
+ 
+type KindlessCircle = RemoveKindField<Circle>;
+
+// You can display arbitrary joins, not just string | number | symbol , but also unions of any type:
+
+type EventConfig<Events extends { kind: string }> = {
+     [E in Events as E["kind"]]: (event: E) => void;
+}
+ 
+type SquareEvent = { kind: "square", x: number, y: number };
+type CircleEvent = { kind: "circle", radius: number };
+ 
+type Config = EventConfig<SquareEvent | CircleEvent>
