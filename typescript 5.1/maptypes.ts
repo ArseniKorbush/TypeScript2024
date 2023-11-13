@@ -105,3 +105,25 @@ type SquareEvent = { kind: "square", x: number, y: number };
 type CircleEvent = { kind: "circle", radius: number };
  
 type Config = EventConfig<SquareEvent | CircleEvent>
+
+// Further Exploration
+
+// Mapped types work well with other functions in this type manipulation section,
+// For example here's a mapped type using a conditional type that returns either true or false
+// Depending on whether the object has the pii property set to the literal true :
+
+type ExtractPII<Type> = {
+  [Property in keyof Type]: Type[Property] extends { pii: true } ? true : false;
+};
+ 
+type DBFields = {
+  id: { format: "incrementing" };
+  name: { type: string; pii: true };
+};
+ 
+type ObjectsNeedingGDPRDeletion = ExtractPII<DBFields>;
+
+// Result - type ObjectsNeedingGDPRDeletion = {
+//   id: false;
+//   name: true;
+// }
