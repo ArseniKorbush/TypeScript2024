@@ -61,9 +61,7 @@ define(..., ['someLib'], function(someLib) {
 // Destinations for exports or module.exports
 
 // They rarely have:
-
 // Assigning window or global properties
-
 // Templates for modules
 
 // There are four templates available for modules: module.d.ts, module-class.d.ts, module-function.d.ts and module-plugin.d.ts.
@@ -86,3 +84,20 @@ const y = new x("hello");
 
 const jest = require("jest");
 require("jest-matchers-files");
+
+// Global Libraries NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// A global library is one that can be accessed from the global scope (i.e. without using any form of import ). 
+// Many libraries simply provide one or more global variables for use. For example, if you were using jQuery, the $ variable can be used by simply referencing it:
+
+$(() => {
+   console.log("hello!");
+});
+
+// Typically in the global library documentation you will find instructions for using library in an HTML script tag:
+
+<script src="http://a.great.cdn.for/someLib.js"></script>
+
+// Today, the most popular and globally available libraries are actually referred to as UMD libraries (see below). 
+// The UMD library documentation is difficult to distinguish from the global library documentation.
+// Before writing a global declaration file, make sure library is not actually UMD.
