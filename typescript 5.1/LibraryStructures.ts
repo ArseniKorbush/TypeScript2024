@@ -101,3 +101,41 @@ $(() => {
 // Today, the most popular and globally available libraries are actually referred to as UMD libraries (see below). 
 // The UMD library documentation is difficult to distinguish from the global library documentation.
 // Before writing a global declaration file, make sure library is not actually UMD.
+
+// Identification of the global Library by code NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// The global library code is usually extremely simple. The global “Hello, world” library might look like this:
+
+function createGreeting(s) {
+   return "Hello, " + s;
+}
+
+// or like this:
+
+// Web
+window.createGreeting = function (s) {
+   return "Hello, " + s;
+};
+
+// Node
+global.createGreeting = function (s) {
+   return "Hello, " + s;
+};
+
+// Potentially any runtime
+globalThis.createGreeting = function (s) {
+   return "Hello, " + s;
+};
+
+// When looking through the global library code, you typically see:
+
+//      Top-level var statements or function declarations.
+//      One or more assignments to window.someName .
+//      Assumptions about the existence of DOM primitives such as document or window.
+
+// You won't see:
+
+//   Checks for the presence or use of module loaders such as require or define .
+//   CommonJS/Node.js-style import form var fs = require("fs");
+//   Calls to number define(...)
+//   Documentation describing how to use require or import library .
