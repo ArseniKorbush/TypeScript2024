@@ -15,6 +15,91 @@ Welcome to my project showcasing the new features added to TypeScript 2024. In t
 - `in.ts`: Big changes to operator types `in` click there.
 - `NaN.ts`: Checking for equality in conditional, index types and checking for narrowing types by the presence of properties `Nan` click there.
 
+### readonly no longer required when checking if arrays satisfy as const
+In TypeScript 5.2, this code would throw an error:
+```JS
+const array = [] as const satisfies string[];
+// Type 'readonly []' does not satisfy the expected type 'string[]'.
+```
+
+This would go away if you added a `readonly` modifier to `string[]`:
+```JS
+const array = [] as const satisfies readonly string[];
+```
+
+But this is a bit annoying. Since we're already specifying `as const`, it feels redundant to also add `readonly`.
+
+### switch(true) will be narrowed properly
+`switch(true)` is a popular way to express complicated if/else in TypeScript. It lets you achieve a pattern-matching-like syntax:
+```JS
+function getNodeDescriptionSwitch(node: Node) {
+  switch (true) {
+    case isArrayLiteralExpression(node):
+    case isObjectLiteralExpression(node):
+      return "Array or object";
+    case isBigIntLiteral(node):
+    case isNumericLiteral(node):
+      return "Numberish";
+    case isNoSubstitutionTemplateLiteral(node):
+    case isRegularExpressionLiteral(node):
+    case isStringLiteral(node):
+    case isTemplateLiteral(node):
+      return "Stringlike";
+    default:
+      return "Some sort of node";
+  }
+}
+```
+
+The unfortunate thing about this pattern is that TypeScript wouldn't do any narrowing in the `case` statements.
+```JS
+function handleStringOrNumber(value: string | number) {
+  switch (true) {
+    case typeof value === "string":
+      // Error: value is still string | number
+      return value.toUpperCase();
+    case typeof value === "number":
+      // Error: value is still string | number
+      return value.toFixed(2);
+  }
+}
+```
+### Import Attributes
+TypeScript 5.3 supports the latest updates to the import attributes proposal.
+
+One use-case of import attributes is to provide information about the expected format of a module to the runtime.
+
+```JS
+// We only want this to be interpreted as JSON,
+// not a runnable/malicious JavaScript file with a `.json` extension.
+import obj from "./something.json" with { type: "json" };
+```
+
+The contents of these attributes are not checked by TypeScript since they’re host-specific, and are simply left alone so that browsers and runtimes can handle them (and possibly error).
+```JS
+// TypeScript is fine with this.
+// But your browser? Probably not.
+import * as foo from "./foo.js" with { type: "fluffy bunny" };
+```
+Dynamic `import()` calls can also use import attributes through a second argument.
+```JS
+const obj = await import("./something.json", {
+    with: { type: "json" }
+});
+```
+The expected type of that second argument is defined by a type called `ImportCallOptions`, which by default just expects a property called `with`.
+
+Evolution from Import Assertions to Import Attributes :
+
+* Transition from `import assertions`: Import attributes have evolved from the earlier concept of "import assertions" introduced in TypeScript 4.5.
+* Main Differences:
+  * Keyword Change: The prominent alteration is the shift from using the `assert` keyword to the `with` keyword.
+  * Expanded Functionality: `Import attributes` grant runtimes the freedom to employ attributes to direct the resolution and interpretation of import paths. In         contrast, import assertions could only assert certain characteristics after loading a module.
+* Deprecation of Old Syntax: TypeScript will phase out the old syntax for import assertions in favor of the proposed import attributes syntax.
+* Migration Guidelines:
+  * Existing Code: Code using `assert` should migrate towards utilizing the `with` keyword.
+  * New Code: For new code requiring import attributes, the exclusive choice should be the `with` keyword.
+* Acknowledgments: Special thanks to `Oleksandr Tarasiuk` for implementing the proposal. Additionally, recognition is given to `Wenlu Wang` for their work on import assertions.
 
 ### The 'using'
 Using is a new keyword that lets us declare new fixed bindings, kind of like const . The key difference is that variables declared with using get their Symbol. dispose method called at the end of the scope!
