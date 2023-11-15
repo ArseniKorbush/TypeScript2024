@@ -139,3 +139,29 @@ globalThis.createGreeting = function (s) {
 //   CommonJS/Node.js-style import form var fs = require("fs");
 //   Calls to number define(...)
 //   Documentation describing how to use require or import library .
+
+// Global Libraries Overview NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// Trend towards UMD Libraries: Most popular libraries have shifted away from the global style due to ease of converting them into UMD libraries.
+// However, smaller libraries or those with no dependencies and requiring a DOM may still utilize the global style.
+
+// Global Library Template:
+
+//   The file global.d.ts presents the myLib example.
+//   Cautionary note: Refer to the "Preventing Name Conflicts" footnote for considerations.
+
+// UMD Modules NEW TOPIC  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// UMD Definition: UMD modules are versatile, functioning as either a module via 'import' or a global module in environments without a loader module.
+// Node.js or RequireJS: Usage involves importing as :
+
+import moment = require("moment");
+console.log(moment.format());
+
+// Vanilla Browser Environment: Directly use functions as in 
+
+console.log(moment.format());
+
+// Examples of Noteworthy Libraries:
+
+// Moment.js: An instance of a popular library utilizing the UMD approach for its implementation.
