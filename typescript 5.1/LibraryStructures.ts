@@ -150,7 +150,7 @@ globalThis.createGreeting = function (s) {
 //   The file global.d.ts presents the myLib example.
 //   Cautionary note: Refer to the "Preventing Name Conflicts" footnote for considerations.
 
-// UMD Modules NEW TOPIC  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// UMD Modules NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // UMD Definition: UMD modules are versatile, functioning as either a module via 'import' or a global module in environments without a loader module.
 // Node.js or RequireJS: Usage involves importing as :
@@ -165,3 +165,23 @@ console.log(moment.format());
 // Examples of Noteworthy Libraries:
 
 // Moment.js: An instance of a popular library utilizing the UMD approach for its implementation.
+
+// UMD library identification NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// UMD modules checks for the presence of a module loader environment. It's an easy-to-see pattern that looks something like this:
+
+(function (root, factory) {
+   if (typeof define === "function" && define.amd) {
+       define(["libName"], factory);
+   } else if (typeof module === "object" && module.exports) {
+       module.exports = factory(require("libName"));
+   } else {
+       root.returnExports = factory(root.libName);
+   }
+}(this, function (b) {
+
+// If you see tests for typeof define , typeof window , or typeof module in library code, especially at the top of the file, it is almost always a UMD library.
+
+// The documentation for UMD libraries also often demonstrates “Using in a Node.js example” showing require,
+// And “Using in a browser example” showing using the <script> tag to load a script.
+// The most popular libraries are now available in UMD packages. Examples include jQuery, Moment.js, lodash and many others.
