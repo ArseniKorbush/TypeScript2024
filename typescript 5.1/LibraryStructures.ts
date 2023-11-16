@@ -185,3 +185,22 @@ console.log(moment.format());
 // The documentation for UMD libraries also often demonstrates “Using in a Node.js example” showing require,
 // And “Using in a browser example” showing using the <script> tag to load a script.
 // The most popular libraries are now available in UMD packages. Examples include jQuery, Moment.js, lodash and many others.
+
+// Consuming Dependencies  NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// Your library can have several types of dependencies. This section shows how to import them into a declaration file.
+// Dependencies on Global Libraries
+
+// If your library depends on the global library , use the // <reference types="..." /> directive:
+
+/// <reference types= "someLib" />
+
+function getThing(): someLib.thing;
+
+// Module Dependencies
+
+// If your library depends on a module, use the import statement:
+
+import * as moment from "moment";
+
+function getThing(): moment;
