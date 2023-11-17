@@ -221,3 +221,35 @@ function getThing(): moment;
 import * as someLib from "someLib";
 
 // Do not use the /// <reference directive to declare a dependency on the UMD library!
+
+// Footnotes
+// Preventing name conflicts NEW TOPIC >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// Note that when you write a global declaration file, you can define many types in the global scope.
+//  We strongly recommend against doing this because it leads to possible unresolved naming conflicts when there are many declaration files in a project.
+
+// A simple rule to follow is to only declare types that are in the namespace of the global variable that library defines.
+//  For example, if library defines the global value 'cats' , you would write
+
+declare namespace cats {
+   interface KittySettings {}
+}
+
+But not
+
+// at the top level
+interface CatsKittySettings {}
+
+// This guidance also ensures that the library can be translated to UMD without breaking the manifest file users.
+// Impact of ES6 on module call signatures
+
+// Many popular libraries, such as Express, present themselves as a callable function when imported. For example, a typical use of Express looks like this:
+
+import exp = require("express");
+var app = exp();
+
+// In ES6-compliant module loaders, the top-level object (here imported as exp ) can only have properties; a top-level module object can never be called.
+
+// The most common solution here is to define a default export for the callable/constructable object;
+// Module loaders usually detect this situation automatically and replace the top-level object with the default export.
+// TypeScript can do this for you if you have "esModuleInterop": true in your tsconfig.json .
